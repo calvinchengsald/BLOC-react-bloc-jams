@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import albumData from './../data/albums'
+import albumData from './../data/albums';
+import PlayerBar from './PlayerBar';
 
  class Album extends Component {
 
@@ -51,6 +52,20 @@ import albumData from './../data/albums'
      this.setSong(song);
      this.play();
    }
+   handleNextSong(){
+     //let indexf = this.state.currentAlbum.indexOf(this.state.currentSong);
+     var indexf = this.state.currentAlbum.songs.findIndex(song => this.state.currentSong ===song);
+     indexf = (indexf+1)% this.state.currentAlbum.songs.length;
+     this.setSong(this.state.currentAlbum.songs[indexf]);
+     this.play();
+   }
+   handlePreviousSong(){
+     //let indexf = this.state.currentAlbum.indexOf(this.state.currentSong);
+     var indexf = this.state.currentAlbum.songs.findIndex( song => this.state.currentSong === song);
+     indexf = (indexf-1+this.state.currentAlbum.songs.length)% this.state.currentAlbum.songs.length;
+     this.setSong(this.state.currentAlbum.songs[indexf]);
+     this.play();
+   }
 
    render() {
      return (
@@ -68,19 +83,19 @@ import albumData from './../data/albums'
                 <col id='song-title-column'/>
                 <col id='song-duration-colum'/>
               </colgroup>
-              <tr>
-                <th>Number</th>
-                <th>Title</th>
-                <th>Length</th>
-              </tr>
+              <thead>
+                <tr>
+                  <th>Number</th>
+                  <th>Title</th>
+                  <th>Length</th>
+                </tr>
+              </thead>
               <tbody>
                 {this.state.currentAlbum.songs.map( (song, index)=>
                   <tr className = 'song' key={index} onClick={()=>this.handleClickSong(song)}>
                     <td>
                         <button>
                           <span className="song-number">{index+1}</span>
-                          <span className="ion-play"></span>
-                          <span className="ion-pause"></span>
                        </button>
                     </td>
                     <td> {song.title} </td>
@@ -89,13 +104,19 @@ import albumData from './../data/albums'
                 )}
               </tbody>
             </table>
-            <div>
-              [Debug info] Current Song: {this.state.currentSong.title}
-            </div>
+            <PlayerBar
+            isPlaying={this.state.isPlaying}
+            currentSong={this.state.currentSong}
+            handlePlay={()=>this.play()}
+            handlePause={()=>this.pause()}
+            handleNextSong={()=>this.handleNextSong()}
+            handlePreviousSong={()=>this.handlePreviousSong()}
+            />
 
-            <div>
-              [Debug info] Current Src: {this.audioElement.src}
-            </div>
+            <div>[Debug info] Current Song: {this.state.currentSong.title} </div>
+            <div>[Debug info] Current Src: {this.audioElement.src}</div>
+
+
 
           </div>
         </section>
