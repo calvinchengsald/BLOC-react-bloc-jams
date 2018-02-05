@@ -5,7 +5,7 @@ class Album extends Component{
   render(){
     return(
       <div>
-        <h1> this is a beautiful album page </h1>
+        <h1> this is a beautiful album page. </h1>
       </div>
     );
 
