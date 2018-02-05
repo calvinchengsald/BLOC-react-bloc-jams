@@ -1,16 +1,13 @@
-import React,  {Component} from 'react';
+import React, { Component } from 'react';
 
-class Album extends Component{
+ class Album extends Component {
+   render() {
+     return (
+       <section className="album">
+         {this.props.match.params.slug} Album will go here
+       </section>
+     );
+   }
+ }
 
-  render(){
-    return(
-      <div>
-        <h1> this is a beautiful album page. </h1>
-      </div>
-    );
-
-  };
-
-
-}
-export default Album;
+ export default Album;
