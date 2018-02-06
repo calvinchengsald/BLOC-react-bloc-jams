@@ -1,3 +1,8 @@
+https://bloc-jams-calvin.herokuapp.com/album/calvin-album
+
+Problems: last 3 songs do not load correctly, 206 partial load
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
