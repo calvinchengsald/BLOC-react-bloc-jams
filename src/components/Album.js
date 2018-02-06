@@ -14,11 +14,16 @@ import PlayerBar from './PlayerBar';
      this.state ={
        currentAlbum : currentAlbum,
        currentSong : currentAlbum.songs[0],
-       isPlaying: false
+       isPlaying: false,
+       currentTime: 0,
+       duration: currentAlbum.songs[0].duration,
+       autoplay: false,
+       volume: 50,
      }
 
      this.audioElement = document.createElement('audio');
      this.audioElement.src = this.state.currentAlbum.songs[0].audioSrc;
+     this.audioElement.volume = 50/100;
    }
 
    play(){
@@ -59,12 +64,67 @@ import PlayerBar from './PlayerBar';
      this.setSong(this.state.currentAlbum.songs[indexf]);
      this.play();
    }
+   handleToggleAutoplay(){
+      if(!this.state.autoplay && this.state.currentTime === this.state.duration){
+        this.handleNextSong();
+      }
+      this.setState({autoplay: !this.state.autoplay});
+   }
    handlePreviousSong(){
      //let indexf = this.state.currentAlbum.indexOf(this.state.currentSong);
      var indexf = this.state.currentAlbum.songs.findIndex( song => this.state.currentSong === song);
      indexf = (indexf-1+this.state.currentAlbum.songs.length)% this.state.currentAlbum.songs.length;
      this.setSong(this.state.currentAlbum.songs[indexf]);
      this.play();
+   }
+   handleTimeChange(e){
+     //console.log(e.target.value);
+     const newTime = (e.target.value * this.audioElement.duration)|| 0;
+     this.audioElement.currentTime = newTime;
+     //this.setState({currentTime:newTime})
+   }
+   handleVolumeChange(e){
+     const newVol = (e.target.value ) || 0;
+     this.audioElement.volume = (newVol / 100)||0;
+     this.setState({volume: e.target.value});
+   }
+   handleVolumeUp(){
+     let newVolume =  Math.min((this.audioElement.volume + 0.1),1.0);
+     this.audioElement.volume = newVolume;
+     newVolume *= 100;
+     console.log("volup set to " + newVolume);
+     this.setState({volume : newVolume});
+   }
+   handleVolumeDown(){
+     let newVolume =  Math.max((this.audioElement.volume - 0.1),0.0);
+     this.audioElement.volume = newVolume;
+     newVolume *= 100;
+     console.log("voldown set to " + newVolume);
+     this.setState({volume : newVolume});
+   }
+   componentDidMount(){
+     this.eventListeners={
+       timeUpdate: (e)=>{
+         this.setState({currentTime : this.audioElement.currentTime});
+         if(this.state.autoplay && this.state.currentTime === this.state.duration){
+           this.handleNextSong();
+         }
+         console.log("timeupdate");
+       },
+       durationChange: (e)=>{
+         this.setState({duration : this.audioElement.duration});
+         console.log("durationupdate");
+       }
+    }
+    this.audioElement.addEventListener('timeupdate', this.eventListeners.timeUpdate);
+    this.audioElement.addEventListener('durationchange', this.eventListeners.durationChange);
+   }
+   componentWillUnmount(){
+//     this.eventListeners = null;
+     this.audioElement.src = null;
+     this.audioElement.removeEventListener('timeupdate', this.eventListeners.timeUpdate);
+     this.audioElement.removeEventListener('durationchange', this.eventListeners.durationchange);
+  //   this.audioElement = null;
    }
 
    render() {
@@ -111,6 +171,15 @@ import PlayerBar from './PlayerBar';
             handlePause={()=>this.pause()}
             handleNextSong={()=>this.handleNextSong()}
             handlePreviousSong={()=>this.handlePreviousSong()}
+            currentTime={this.audioElement.currentTime}
+            duration={this.audioElement.duration}
+            handleTimeChange={(e)=>this.handleTimeChange(e)}
+            handleVolumeChange={(e)=>this.handleVolumeChange(e)}
+            handleToggleAutoplay={()=>this.handleToggleAutoplay()}
+            autoplay={this.state.autoplay}
+            volume={this.state.volume}
+            handleVolumeUp = {()=>this.handleVolumeUp()}
+            handleVolumeDown = {()=>this.handleVolumeDown()}
             />
 
             <div>[Debug info] Current Song: {this.state.currentSong.title} </div>
