@@ -12,10 +12,10 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1> Bloc Jams </h1>
-          <nav>
-            <Link to='/'>Landing</Link>
-            <Link to='/Library'>Library</Link>
-            <Link to='/Album'>Album</Link>
+          <nav className="btn-group btn-group-lg">
+            <Link to='/'> <button type="button" className="btn"> Home </button></Link>
+            <Link to='/Library'> <button type="button" className="btn"> Library </button></Link>
+            <Link to='/Album/'> <button type="button" className="btn"> Album </button></Link>
           </nav>
         </header>
         <main>
