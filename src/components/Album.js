@@ -156,7 +156,7 @@ import PlayerBar from './PlayerBar';
        <section className="album container">
         <section className="album-info">
           <div className='row'>
-            <img className='album-cover-art col-lg-6 col-md-6 col-sm-12 col-xs-12 img-rounded' src={this.state.currentAlbum.albumCover} alt ={this.state.currentAlbum.title}/>
+            <img className='img-responsive img-circle album-cover-art col-lg-6 col-md-6 col-sm-12 col-xs-12' src={this.state.currentAlbum.albumCover} alt ={this.state.currentAlbum.title}/>
             <div className='album-details col-lg-6 col-md-6 col-sm-12 col-xs-12' >
               <h1 className='album-details-title'> Title: {this.state.currentAlbum.title} </h1>
               <h2 className='album-details-artist'> Artist: {this.state.currentAlbum.artist} </h2>

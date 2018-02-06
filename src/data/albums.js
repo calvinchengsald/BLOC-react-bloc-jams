@@ -22,9 +22,9 @@ export default [
     songs: [
       { title: 'Your Song', duration: '183', audioSrc: '/assets/music/your-song.mp3' },
       { title: 'We Dont Talk Anymore', duration: '217', audioSrc: '/assets/music/dont-talk.mp3' },
-      { title: 'Love Yourself', duration: '233', audioSrc: '/assets/music/love-yourself.mp3' },
-      { title: 'Strip That Down', duration: '204', audioSrc: '/assets/music/strip-that-down.mp3' },
-      { title: 'Thinking Out Loud', duration: '281', audioSrc: '/assets/music/thinking-out-loud.mp3' }
+      { title: 'Love Yourself', duration: '233', audioSrc: '/assets/music/Love-Yourself.mp3' },
+      { title: 'Strip That Down', duration: '204', audioSrc: '/assets/music/Strip-That-Down.mp3' },
+      { title: 'Thinking Out Loud', duration: '281', audioSrc: '/assets/music/Thinking-Out-Loud.mp3' }
     ]
   }
 ];
