@@ -92,14 +92,14 @@ import PlayerBar from './PlayerBar';
      let newVolume =  Math.min((this.audioElement.volume + 0.1),1.0);
      this.audioElement.volume = newVolume;
      newVolume *= 100;
-     console.log("volup set to " + newVolume);
+     //console.log("volup set to " + newVolume);
      this.setState({volume : newVolume});
    }
    handleVolumeDown(){
      let newVolume =  Math.max((this.audioElement.volume - 0.1),0.0);
      this.audioElement.volume = newVolume;
      newVolume *= 100;
-     console.log("voldown set to " + newVolume);
+     //console.log("voldown set to " + newVolume);
      this.setState({volume : newVolume});
    }
    componentDidMount(){
@@ -109,11 +109,9 @@ import PlayerBar from './PlayerBar';
          if(this.state.autoplay && this.state.currentTime === this.state.duration){
            this.handleNextSong();
          }
-         console.log("timeupdate");
        },
        durationChange: (e)=>{
          this.setState({duration : this.audioElement.duration});
-         console.log("durationupdate");
        }
     }
     this.audioElement.addEventListener('timeupdate', this.eventListeners.timeUpdate);
@@ -126,67 +124,95 @@ import PlayerBar from './PlayerBar';
      this.audioElement.removeEventListener('durationchange', this.eventListeners.durationchange);
   //   this.audioElement = null;
    }
+   mouseOver(e, song){
+     var idnum = e.target.id.charAt(0);
+     var dummyEle = document.getElementById(idnum+'-song-span');
+     dummyEle.innerHTML="";
+     if(this.state.currentSong.title===song.title && this.state.isPlaying){
+       dummyEle.className = 'ion-ios-pause';
+     }
+     else {
+       dummyEle.className = 'ion-ios-play';
+     }
+   }
+   mouseOut(e, song, index){
+     var idnum = e.target.id.charAt(0);
+     var dummyEle = document.getElementById(idnum+'-song-span');
+     if(this.state.currentSong.title===song.title && this.state.isPlaying){
+       dummyEle.className = 'ion-ios-pause';
+     }
+     else if(this.state.currentSong.title===song.title){
+       dummyEle.className = 'ion-ios-play';
+     }
+     else{
+       dummyEle.className = '';
+       dummyEle.innerHTML = index+1;
+     }
+
+   }
 
    render() {
      return (
-       <section className="album">
+       <section className="album container">
         <section className="album-info">
-          <img className='album-cover-art' src={this.state.currentAlbum.albumCover} alt ={this.state.currentAlbum.title}/>
-
-          <div className='album-details'>
-            <h1 className='album-details-title'> Title: {this.state.currentAlbum.title} </h1>
-            <h2 className='album-details-artist'> Artist: {this.state.currentAlbum.artist} </h2>
-            <div className='album-details-release-info'> Release Info: {this.state.currentAlbum.releaseInfo} </div>
-            <table id='song-list'>
-              <colgroup>
-                <col id='song-number-column'/>
-                <col id='song-title-column'/>
-                <col id='song-duration-colum'/>
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Number</th>
-                  <th>Title</th>
-                  <th>Length</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.currentAlbum.songs.map( (song, index)=>
-                  <tr className = 'song' key={index} onClick={()=>this.handleClickSong(song)}>
-                    <td>
-                        <button>
-                          <span className="song-number">{index+1}</span>
-                       </button>
-                    </td>
-                    <td> {song.title} </td>
-                    <td> {song.duration} </td>
+          <div className='row'>
+            <img className='album-cover-art col-lg-6 col-md-6 col-sm-12 col-xs-12 img-rounded' src={this.state.currentAlbum.albumCover} alt ={this.state.currentAlbum.title}/>
+            <div className='album-details col-lg-6 col-md-6 col-sm-12 col-xs-12' >
+              <h1 className='album-details-title'> Title: {this.state.currentAlbum.title} </h1>
+              <h2 className='album-details-artist'> Artist: {this.state.currentAlbum.artist} </h2>
+              <div className='album-details-release-info'> Release Info: {this.state.currentAlbum.releaseInfo} </div>
+            </div>
+          </div>
+          <div className='row'>
+            <div className="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-10 offset-sm-1 col-xs-12">
+              <table className='table table-boardered table-hover' id='song-list'>
+                <colgroup>
+                  <col id='song-number-column'/>
+                  <col id='song-title-column'/>
+                  <col id='song-duration-colum'/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Number</th>
+                    <th>Title</th>
+                    <th>Length</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-            <PlayerBar
-            isPlaying={this.state.isPlaying}
-            currentSong={this.state.currentSong}
-            handlePlay={()=>this.play()}
-            handlePause={()=>this.pause()}
-            handleNextSong={()=>this.handleNextSong()}
-            handlePreviousSong={()=>this.handlePreviousSong()}
-            currentTime={this.audioElement.currentTime}
-            duration={this.audioElement.duration}
-            handleTimeChange={(e)=>this.handleTimeChange(e)}
-            handleVolumeChange={(e)=>this.handleVolumeChange(e)}
-            handleToggleAutoplay={()=>this.handleToggleAutoplay()}
-            autoplay={this.state.autoplay}
-            volume={this.state.volume}
-            handleVolumeUp = {()=>this.handleVolumeUp()}
-            handleVolumeDown = {()=>this.handleVolumeDown()}
-            />
+                </thead>
+                <tbody >
+                  {this.state.currentAlbum.songs.map( (song, index)=>
+                    <tr onMouseOut={(e)=>this.mouseOut(e,song, index)} onMouseOver= {(e)=>this.mouseOver(e, song)} id={index+'-song-tr'} className = 'song' key={index}  onClick={()=>this.handleClickSong(song)}>
+                      <td id= {index+'-song-td'} >
+                          <button id = {index+'-song-button'}  >
+                            <span  id={index+'-song-span'} className={(this.state.currentSong===song)?(this.state.isPlaying?'ion-ios-pause':'ion-ios-play'):"song-number"}>{(this.state.currentSong===song)?"":index+1}</span>
+                         </button>
+                      </td>
+                      <td id={index+'-song-td-title'}> {song.title} </td>
+                      <td id={index+'-song-td-duration'}> {song.duration} </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className='row'>
+              <PlayerBar
+              isPlaying={this.state.isPlaying}
+              currentSong={this.state.currentSong}
+              handlePlay={()=>this.play()}
+              handlePause={()=>this.pause()}
+              handleNextSong={()=>this.handleNextSong()}
+              handlePreviousSong={()=>this.handlePreviousSong()}
+              currentTime={this.audioElement.currentTime}
+              duration={this.audioElement.duration}
+              handleTimeChange={(e)=>this.handleTimeChange(e)}
+              handleVolumeChange={(e)=>this.handleVolumeChange(e)}
+              handleToggleAutoplay={()=>this.handleToggleAutoplay()}
+              autoplay={this.state.autoplay}
+              volume={this.state.volume}
+              handleVolumeUp = {()=>this.handleVolumeUp()}
+              handleVolumeDown = {()=>this.handleVolumeDown()}
 
-            <div>[Debug info] Current Song: {this.state.currentSong.title} </div>
-            <div>[Debug info] Current Src: {this.audioElement.src}</div>
-
-
-
+              />
           </div>
         </section>
 
